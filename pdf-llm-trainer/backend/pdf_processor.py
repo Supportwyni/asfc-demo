@@ -126,11 +126,11 @@ def process_pdf(pdf_path: Path, output_dir: Path) -> Dict:
             
             # Write chunks to JSONL
             with open(output_file, 'a', encoding='utf-8') as f:
-                for chunk_text in page_chunks:
+                for chunk_content in page_chunks:
                     chunk_data = {
                         "source": pdf_path.name,
                         "page": page_num + 1,
-                        "text": chunk_text
+                        "text": chunk_content
                     }
                     f.write(json.dumps(chunk_data, ensure_ascii=False) + '\n')
                     chunks_created += 1

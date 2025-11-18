@@ -38,6 +38,14 @@ app.innerHTML = `
         <button id="upload-button" class="upload-button" disabled>Upload & Process</button>
         
         <div id="upload-status" class="upload-status"></div>
+        
+        <!-- Uploaded PDFs Preview Section -->
+        <div class="uploaded-pdfs-preview">
+          <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 1.1rem;">Recently Uploaded PDFs</h3>
+          <div id="uploaded-pdfs-list" class="uploaded-pdfs-list">
+            <div class="loading">Loading...</div>
+          </div>
+        </div>
       </div>
     </div>
     
@@ -115,6 +123,9 @@ uploadButton.addEventListener('click', async () => {
       if (document.querySelector('#files-tab')?.classList.contains('active')) {
         loadFilesList();
       }
+      
+      // Refresh uploaded PDFs preview
+      loadUploadedPDFsPreview();
     } else {
       uploadStatus.textContent = `✗ Error: ${data.error || 'Upload failed'}`;
       uploadStatus.className = 'upload-status error';
@@ -126,6 +137,67 @@ uploadButton.addEventListener('click', async () => {
     uploadButton.disabled = false;
   }
 });
+
+// Load uploaded PDFs preview in upload tab
+async function loadUploadedPDFsPreview() {
+  const previewList = document.getElementById('uploaded-pdfs-list');
+  if (!previewList) return;
+  
+  try {
+    const response = await fetch(`${API_URL}/files`);
+    const data = await response.json();
+    
+    if (data.success && data.files && data.files.length > 0) {
+      // Show only the 5 most recent PDFs
+      const recentFiles = data.files.slice(0, 5);
+      
+      previewList.innerHTML = recentFiles.map((file: any) => {
+        const date = new Date(file.uploaded_at).toLocaleDateString();
+        const canView = file.id !== null && file.id !== undefined;
+        
+        return `
+          <div class="uploaded-pdf-preview-item glass-strong">
+            <div class="preview-pdf-icon">📄</div>
+            <div class="preview-pdf-info">
+              <div class="preview-pdf-name">${file.filename}</div>
+              <div class="preview-pdf-meta">
+                <span>${file.pages_count} pages</span>
+                <span>•</span>
+                <span>${file.chunks_count} chunks</span>
+                <span>•</span>
+                <span>${date}</span>
+              </div>
+            </div>
+            ${canView ? `
+              <button class="preview-view-button" data-file-id="${file.id}" data-filename="${file.filename}" title="View PDF">
+                👁️ View
+              </button>
+            ` : '<span class="preview-no-view">Processing...</span>'}
+          </div>
+        `;
+      }).join('');
+      
+      // Add event listeners to preview view buttons
+      previewList.querySelectorAll('.preview-view-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const target = e.target as HTMLButtonElement;
+          const fileId = target.getAttribute('data-file-id');
+          const filename = target.getAttribute('data-filename');
+          if (fileId) {
+            viewPDF(parseInt(fileId), filename || 'document.pdf');
+          }
+        });
+      });
+    } else {
+      previewList.innerHTML = '<div class="no-files-preview">No PDFs uploaded yet. Upload your first PDF above!</div>';
+    }
+  } catch (error) {
+    previewList.innerHTML = '<div class="error-preview">Failed to load PDFs</div>';
+  }
+}
+
+// Load preview when page loads
+loadUploadedPDFsPreview();
 
 // Tab switching
 const tabButtons = document.querySelectorAll('.tab-button');
