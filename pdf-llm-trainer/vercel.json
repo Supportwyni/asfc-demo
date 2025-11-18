@@ -1,17 +1,15 @@
 {
-  "buildCommand": "cd frontend && npm run build",
+  "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "framework": "vite",
-  "installCommand": "cd frontend && npm install",
   "rewrites": [
     {
       "source": "/admin",
       "destination": "/admin.html"
     },
     {
-      "source": "/((?!api).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
-
