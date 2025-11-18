@@ -57,18 +57,36 @@ fi
 
 # Start backend in background
 echo "[2/3] Starting backend server on http://localhost:5000..."
-python -m backend.start > backend.log 2>&1 &
-BACKEND_PID=$!
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" ]]; then
+    # Windows Git Bash
+    python -m backend.start > backend.log 2>&1 &
+    BACKEND_PID=$!
+else
+    # Linux/Mac
+    python -m backend.start > backend.log 2>&1 &
+    BACKEND_PID=$!
+fi
 echo "   Backend started with PID: $BACKEND_PID"
 
 # Wait for backend to start
-echo "   Waiting for backend to initialize..."
-for i in {1..10}; do
-    if curl -s http://localhost:5000/api/health > /dev/null 2>&1; then
-        echo "   [OK] Backend is running!"
-        break
+echo "   Waiting for backend to initialifor i in {1..15}; do
+    if command -v curl >/dev/null 2>&1; then
+        if curl -s http://localhost:5000/api/health > /dev/null 2>&1; then
+            echo "   [OK] Backend is running!"
+            break
+        fi
+    elif command -v wget >/dev/null 2>&1; then
+        if wget -q -O /dev/null http://localhost:5000/api/health 2>/dev/null; then
+            echo "   [OK] Backend is running!"
+            break
+        fi
+    else
+        # Just wait if no curl/wget available
+        if [ $i -eq 5 ]; then
+            echo "   [INFO] Waiting for backend (no curl/wget available for health check)..."
+        fi
     fi
-    if [ $i -eq 10 ]; then
+    if [ $i -eq 15 ]; then
         echo "   [WARNING] Backend may still be starting..."
     else
         sleep 1
@@ -78,8 +96,15 @@ done
 # Start frontend
 echo "[3/3] Starting frontend server on http://localhost:5173..."
 cd frontend
-npm run dev > ../frontend.log 2>&1 &
-FRONTEND_PID=$!
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" ]]; then
+    # Windows Git Bash - use cmd to run npm
+    cmd //c "npm run dev > ..\frontend.log 2>&1" &
+    FRONTEND_PID=$!
+else
+    # Linux/Mac
+    npm run dev > ../frontend.log 2>&1 &
+    FRONTEND_PID=$!
+fi
 cd ..
 echo "   Frontend started with PID: $FRONTEND_PID"
 
