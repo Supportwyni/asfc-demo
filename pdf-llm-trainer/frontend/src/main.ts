@@ -26,40 +26,25 @@ app.innerHTML = `
       <button id="close-admin" class="close-admin-button-main">×</button>
     </div>
     
-    <div class="admin-tabs-main">
-      <button class="admin-tab-main active" data-tab="upload">Upload PDF</button>
-      <button class="admin-tab-main" data-tab="files">Uploaded Files</button>
-    </div>
-    
-    <!-- Upload Tab -->
-    <div id="upload-tab" class="admin-tab-content-main active">
-      <div class="admin-upload-section">
-        <div class="upload-area-main">
-          <input 
-            type="file" 
-            id="pdf-upload" 
-            accept=".pdf"
-            style="display: none;"
-          />
-          <label for="pdf-upload" class="upload-label-main">
-            <div class="upload-icon-large">📄</div>
-            <div class="upload-text-main">
-              <div class="upload-title">Choose PDF file</div>
-              <div class="upload-subtitle">Click to select or drag and drop</div>
-            </div>
-          </label>
-          <div id="file-name-main" class="file-name-main"></div>
-        </div>
-        <button id="upload-button" class="upload-button-main" disabled>Upload & Process</button>
-        <div id="upload-status" class="upload-status-main"></div>
+    <div class="admin-upload-section">
+      <div class="upload-area-main">
+        <input 
+          type="file" 
+          id="pdf-upload" 
+          accept=".pdf"
+          style="display: none;"
+        />
+        <label for="pdf-upload" class="upload-label-main">
+          <div class="upload-icon-large">📄</div>
+          <div class="upload-text-main">
+            <div class="upload-title">Choose PDF file</div>
+            <div class="upload-subtitle">Click to select or drag and drop</div>
+          </div>
+        </label>
+        <div id="file-name-main" class="file-name-main"></div>
       </div>
-    </div>
-    
-    <!-- Files Tab -->
-    <div id="files-tab" class="admin-tab-content-main">
-      <div id="files-list" class="files-list-main">
-        <div class="files-loading">Loading files...</div>
-      </div>
+      <button id="upload-button" class="upload-button-main" disabled>Upload & Process</button>
+      <div id="upload-status" class="upload-status-main"></div>
     </div>
   </div>
   
@@ -89,9 +74,6 @@ const closeAdminButton = document.querySelector<HTMLButtonElement>('#close-admin
 const pdfUpload = document.querySelector<HTMLInputElement>('#pdf-upload')!;
 const uploadButton = document.querySelector<HTMLButtonElement>('#upload-button')!;
 const uploadStatus = document.querySelector<HTMLDivElement>('#upload-status')!;
-const filesList = document.querySelector<HTMLDivElement>('#files-list')!;
-const adminTabs = document.querySelectorAll<HTMLButtonElement>('.admin-tab-main');
-const tabContents = document.querySelectorAll<HTMLDivElement>('.admin-tab-content-main');
 
 let messages: ChatMessage[] = [];
 
@@ -264,7 +246,6 @@ adminButton.addEventListener('click', () => {
     chatContainer.style.display = 'none';
     adminPanel.classList.remove('admin-panel-hidden');
     adminPanel.classList.add('admin-panel-visible');
-    loadFilesList(); // Load files when panel opens
   } else {
     chatContainer.style.display = 'flex';
     adminPanel.classList.remove('admin-panel-visible');
@@ -279,66 +260,6 @@ closeAdminButton.addEventListener('click', () => {
   adminPanel.classList.add('admin-panel-hidden');
 });
 
-// Tab switching
-adminTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const targetTab = tab.getAttribute('data-tab');
-    
-    // Update active tab
-    adminTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    
-    // Update active content
-    tabContents.forEach(content => {
-      content.classList.remove('active');
-      if (content.id === `${targetTab}-tab`) {
-        content.classList.add('active');
-      }
-    });
-    
-    // Load files if switching to files tab
-    if (targetTab === 'files') {
-      loadFilesList();
-    }
-  });
-});
-
-// Load files list
-async function loadFilesList() {
-  filesList.innerHTML = '<div class="files-loading">Loading files...</div>';
-  
-  try {
-    const response = await fetch(`${API_URL}/files`);
-    const data = await response.json();
-    
-    if (data.success && data.files.length > 0) {
-      filesList.innerHTML = data.files.map((file: any) => {
-        const date = new Date(file.uploaded_at);
-        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        
-        return `
-          <div class="file-item">
-            <div class="file-icon">📄</div>
-            <div class="file-info">
-              <div class="file-name-text">${escapeHtml(file.filename)}</div>
-              <div class="file-meta">
-                <span>${file.chunks_count} chunks</span>
-                <span>•</span>
-                <span>${file.pages_count} pages</span>
-                <span>•</span>
-                <span>${formattedDate}</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    } else {
-      filesList.innerHTML = '<div class="files-empty">No files uploaded yet</div>';
-    }
-  } catch (error) {
-    filesList.innerHTML = `<div class="files-error">Error loading files: ${error instanceof Error ? error.message : 'Unknown error'}</div>`;
-  }
-}
 
 // File upload handling
 pdfUpload.addEventListener('change', (e) => {
@@ -385,7 +306,6 @@ uploadButton.addEventListener('click', async () => {
       addMessage('assistant', `PDF "${data.filename}" has been successfully processed and added to the knowledge base. You can now ask questions about it!`);
       
       // Refresh files list
-      loadFilesList();
     } else {
       uploadStatus.textContent = `✗ Error: ${data.error || 'Upload failed'}`;
       uploadStatus.className = 'upload-status error';
