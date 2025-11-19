@@ -26,7 +26,7 @@ cleanup() {
     # Also kill by port in case PIDs didn't work
     if command -v lsof >/dev/null 2>&1; then
         lsof -ti:5000 | xargs kill -9 2>/dev/null || true
-        lsof -ti:5173 | xargs kill -9 2>/dev/null || true
+        lsof -ti:5273 | xargs kill -9 2>/dev/null || true
     fi
     exit 0
 }
@@ -94,7 +94,7 @@ echo "   Waiting for backend to initialifor i in {1..15}; do
 done
 
 # Start frontend
-echo "[3/3] Starting frontend server on http://localhost:5173..."
+echo "[3/3] Starting frontend server on http://localhost:5273..."
 cd frontend
 if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || "$OSTYPE" == "cygwin" ]]; then
     # Windows Git Bash - use cmd to run npm
@@ -114,9 +114,9 @@ echo "Both servers are running!"
 echo "============================================================"
 echo ""
 echo "✓ Backend:  http://localhost:5000 (PID: $BACKEND_PID)"
-echo "✓ Frontend: http://localhost:5173 (PID: $FRONTEND_PID)"
+echo "✓ Frontend: http://localhost:5273 (PID: $FRONTEND_PID)"
 echo ""
-echo "Open your browser and go to: http://localhost:5173"
+echo "Open your browser and go to: http://localhost:5273"
 echo ""
 echo "Logs:"
 echo "  - Backend:  tail -f backend.log"

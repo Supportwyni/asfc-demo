@@ -39,7 +39,7 @@ for /L %%i in (1,1,10) do (
 :backend_ready
 
 REM Start frontend
-echo [3/3] Starting frontend server on http://localhost:5173...
+echo [3/3] Starting frontend server on http://localhost:5273...
 cd frontend
 start "ASFC Frontend" /min cmd /c "npm run dev > ..\frontend.log 2>&1"
 cd ..
@@ -50,9 +50,9 @@ echo Both servers are running!
 echo ============================================================
 echo.
 echo Backend:  http://localhost:5000
-echo Frontend: http://localhost:5173
+echo Frontend: http://localhost:5273
 echo.
-echo Open your browser and go to: http://localhost:5173
+echo Open your browser and go to: http://localhost:5273
 echo.
 echo Logs:
 echo   - Backend:  type backend.log
@@ -67,7 +67,7 @@ echo Stopping servers...
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5000 ^| findstr LISTENING') do (
     taskkill /F /PID %%a >nul 2>&1
 )
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5173 ^| findstr LISTENING') do (
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :5273 ^| findstr LISTENING') do (
     taskkill /F /PID %%a >nul 2>&1
 )
 

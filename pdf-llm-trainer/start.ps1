@@ -59,7 +59,7 @@ for ($i = 1; $i -le 10; $i++) {
 }
 
 # Start frontend
-Write-Host "[3/3] Starting frontend server on http://localhost:5173..." -ForegroundColor Yellow
+Write-Host "[3/3] Starting frontend server on http://localhost:5273..." -ForegroundColor Yellow
 Set-Location frontend
 Start-Process -NoNewWindow -FilePath "npm" -ArgumentList "run", "dev" -RedirectStandardOutput "..\frontend.log" -RedirectStandardError "..\frontend.log"
 Start-Sleep -Seconds 2
@@ -74,9 +74,9 @@ Write-Host "Both servers are running!" -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "✓ Backend:  http://localhost:5000" -ForegroundColor Green
-Write-Host "✓ Frontend: http://localhost:5173" -ForegroundColor Green
+Write-Host "✓ Frontend: http://localhost:5273" -ForegroundColor Green
 Write-Host ""
-Write-Host "Open your browser and go to: http://localhost:5173" -ForegroundColor Cyan
+Write-Host "Open your browser and go to: http://localhost:5273" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Logs:" -ForegroundColor Yellow
 Write-Host "  - Backend:  Get-Content backend.log -Wait -Tail 20" -ForegroundColor Gray
@@ -90,7 +90,7 @@ function Cleanup {
     Write-Host ""
     Write-Host "Stopping servers..." -ForegroundColor Yellow
     Stop-ProcessOnPort -Port 5000
-    Stop-ProcessOnPort -Port 5173
+    Stop-ProcessOnPort -Port 5273
     Write-Host "Servers stopped." -ForegroundColor Green
 }
 

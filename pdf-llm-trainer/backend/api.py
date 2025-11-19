@@ -18,7 +18,7 @@ import json
 app = Flask(__name__)
 # Enable CORS for all routes and origins
 # Allow all origins in production, or specify your Vercel domain
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000").split(",")
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5273,http://localhost:3000,http://127.0.0.1:5273,http://127.0.0.1:3000").split(",")
 CORS(app, resources={
     r"/api/*": {
         "origins": allowed_origins,
