@@ -1,5 +1,6 @@
 """Start the backend API server."""
 import sys
+import os
 from pathlib import Path
 
 # Add project root to path
@@ -30,7 +31,13 @@ if __name__ == '__main__':
     print("=" * 60)
     
     try:
-        app.run(debug=True, port=port, host='127.0.0.1')
+        # Get port from environment variable (for production) or use default
+        port = int(os.getenv('PORT', port))
+        # In production, bind to 0.0.0.0 to accept external connections
+        host = os.getenv('HOST', '127.0.0.1')
+        debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+        
+        app.run(debug=debug, port=port, host=host)
     except OSError as e:
         print(f"[ERROR] Failed to start server: {e}")
         sys.exit(1)

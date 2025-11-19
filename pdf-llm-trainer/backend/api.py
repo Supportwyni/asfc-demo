@@ -18,14 +18,27 @@ import json
 app = Flask(__name__)
 # Enable CORS for all routes and origins
 # Allow all origins in production, or specify your Vercel domain
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000").split(",")
-CORS(app, resources={
-    r"/api/*": {
-        "origins": allowed_origins,
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+default_origins = "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000"
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", default_origins)
+allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+
+# In production, allow all origins if ALLOWED_ORIGINS is not set
+if os.getenv("FLASK_ENV") == "production" and not os.getenv("ALLOWED_ORIGINS"):
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": "*",
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
+else:
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": allowed_origins,
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
 
 # Configuration for file uploads
 ALLOWED_EXTENSIONS = {'pdf'}
