@@ -23,3 +23,8 @@ OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "qwen/qwen-2.5-72b-instruct:fre
 CHUNK_DIR = PROJECT_ROOT / "data" / "chunks"
 TOP_K = int(os.getenv("TOP_K", "3"))
 
+# Embedding configuration
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "openai/text-embedding-3-small")
+EMBEDDING_DIMENSIONS = 1536
+USE_SEMANTIC_SEARCH = os.getenv("USE_SEMANTIC_SEARCH", "true").lower() == "true"
+

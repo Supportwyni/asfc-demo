@@ -86,7 +86,8 @@ def load_relevant_chunks(query: str, top_k: int = None) -> List[Dict]:
             # Sort by page number for better organization
             db_chunks.sort(key=lambda x: x.get('page', 0))
         else:
-            # Regular text search
+            # Use semantic search (which falls back to text search if needed)
+            # Semantic search already returns chunks ordered by relevance
             db_chunks = ChunkRepository.search_by_text(query, limit=top_k * 2)
         
         for db_chunk in db_chunks:
@@ -144,25 +145,14 @@ def load_relevant_chunks(query: str, top_k: int = None) -> List[Dict]:
         print(f"[RAG] Returning all {len(all_chunks)} chunks from {bulletin_source} for comprehensive analysis")
         return all_chunks
     
-    # Otherwise, use relevance scoring for regular queries
-    scored_chunks = []
-    for chunk in all_chunks:
-        text_lower = chunk.get('text', '').lower()
-        score = sum(1 for term in query_terms if term in text_lower)
-        if score > 0:
-            scored_chunks.append((score, chunk))
+    # For regular queries, semantic search already returns chunks ordered by relevance
+    # Just return the top_k chunks (they're already sorted by similarity)
+    result = all_chunks[:top_k]
     
-    # Sort by score and return top_k
-    scored_chunks.sort(key=lambda x: x[0], reverse=True)
-    result = [chunk for _, chunk in scored_chunks[:top_k]]
-    
-    if scored_chunks:
-        top_scores = [s for s, _ in scored_chunks[:top_k]]
-        print(f"[RAG] Found {len(result)} relevant chunks (top scores: {top_scores})")
+    if result:
+        print(f"[RAG] Returning {len(result)} most relevant chunks from semantic search")
     else:
-        # If no matches, return some chunks anyway
-        print(f"[RAG] No exact matches found, returning {min(top_k, len(all_chunks))} random chunks")
-        result = all_chunks[:top_k]
+        print(f"[RAG] No chunks found for query")
     
     return result
 

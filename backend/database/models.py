@@ -1,6 +1,6 @@
 """Database models for Supabase tables."""
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from pydantic import BaseModel
 
 
@@ -36,5 +36,6 @@ class Chunk(BaseModel):
     page: int
     text: str
     chunk_index: Optional[int] = None
+    embedding: Optional[List[float]] = None  # Vector embedding for semantic search
     created_at: Optional[datetime] = None
 
