@@ -1,10 +1,13 @@
 """Vercel serverless function for health check."""
-from flask import jsonify
+import json
 
 def handler(request):
     """Health check endpoint."""
-    return jsonify({'status': 'ok'}), 200, {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json'
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+        },
+        'body': json.dumps({'status': 'ok'})
     }
-
