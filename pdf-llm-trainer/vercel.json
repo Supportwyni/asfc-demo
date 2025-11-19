@@ -3,7 +3,32 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci",
   "framework": "vite",
+  "functions": {
+    "api/**/*.py": {
+      "runtime": "python3.9"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/api/chat",
+      "destination": "/api/chat"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/health"
+    },
+    {
+      "source": "/api/upload",
+      "destination": "/api/upload"
+    },
+    {
+      "source": "/api/files",
+      "destination": "/api/files"
+    },
+    {
+      "source": "/api/files/:file_id/pdf",
+      "destination": "/api/files/[file_id]/pdf"
+    },
     {
       "source": "/admin",
       "destination": "/admin.html"
