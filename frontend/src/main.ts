@@ -1,6 +1,16 @@
 import './style.css'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+// Configure marked options
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+  headerIds: false,
+  mangle: false
+});
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -109,32 +119,22 @@ function renderMessages() {
   chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-function escapeHtml(text: string): string {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
 function formatMessageContent(text: string): string {
-  // Escape HTML first
-  let formatted = escapeHtml(text);
-  
-  // Convert double newlines to paragraph breaks
-  formatted = formatted.replace(/\n\n+/g, '</p><p>');
-  
-  // Convert single newlines to <br>
-  formatted = formatted.replace(/\n/g, '<br>');
-  
-  // Wrap in paragraph tags
-  if (formatted && !formatted.startsWith('<p>')) {
-    formatted = '<p>' + formatted + '</p>';
+  // Parse Markdown and sanitize HTML
+  try {
+    const html = marked.parse(text);
+    // Sanitize to prevent XSS attacks
+    return DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'table', 'thead', 'tbody', 'tr', 'th', 'td'],
+      ALLOWED_ATTR: ['href', 'title', 'class']
+    });
+  } catch (error) {
+    console.error('Markdown parsing error:', error);
+    // Fallback to plain text if Markdown parsing fails
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML.replace(/\n/g, '<br>');
   }
-  
-  // Clean up empty paragraphs
-  formatted = formatted.replace(/<p><\/p>/g, '');
-  formatted = formatted.replace(/<p><br><\/p>/g, '<p></p>');
-  
-  return formatted;
 }
 
 async function sendMessage() {
