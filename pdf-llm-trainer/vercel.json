@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
+  "buildCommand": "cd pdf-llm-trainer && npm install && npm run build",
+  "outputDirectory": "pdf-llm-trainer/dist",
+  "installCommand": "cd pdf-llm-trainer && npm install",
   "framework": "vite",
   "rewrites": [
     {
