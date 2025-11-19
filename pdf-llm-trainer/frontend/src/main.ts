@@ -11,7 +11,7 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 
 app.innerHTML = `
   <div class="header">
-    <h1 class="header-title">ASFC</h1>
+    <h1 class="header-title">AFSC</h1>
     <p class="header-subtitle">Aviation Chat Assistant</p>
     <!-- Hidden admin button - click top-right corner to access -->
     <button id="admin-button" class="admin-button-hidden" title="Admin Panel">⚙️</button>

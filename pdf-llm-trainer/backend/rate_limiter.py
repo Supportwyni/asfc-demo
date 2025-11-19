@@ -30,7 +30,7 @@ class RateLimiter:
             self.last_request_time = time.time()
 
 # Global rate limiter instance
-_rate_limiter = RateLimiter(min_delay_seconds=3.0)  # 3 seconds between requests
+_rate_limiter = RateLimiter(min_delay_seconds=5.0)  # 5 seconds between requests (increased rate)
 
 def wait_for_rate_limit():
     """Wait if necessary to maintain rate limit."""

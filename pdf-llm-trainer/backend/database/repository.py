@@ -88,10 +88,32 @@ class ChunkRepository:
     def search_by_text(query: str, limit: int = 10) -> List[Dict[str, Any]]:
         """Search chunks by text content (full-text search)."""
         client = get_client()
-        # Note: This requires a full-text search setup in Supabase
-        # For now, using basic filtering
-        result = client.table("chunks").select("*").ilike("text", f"%{query}%").limit(limit).execute()
-        return result.data if result.data else []
+        # Split query into words and search for each word separately
+        # This makes the search more flexible for multi-word queries
+        query_words = query.lower().split()
+        query_words = [w.strip() for w in query_words if len(w.strip()) > 2]  # Filter out short words
+        
+        if not query_words:
+            # Fallback to original method if no valid words
+            result = client.table("chunks").select("*").ilike("text", f"%{query}%").limit(limit).execute()
+            return result.data if result.data else []
+        
+        # Search for chunks containing ANY of the query words
+        # Use OR logic: chunk contains word1 OR word2 OR word3...
+        all_results = []
+        seen_ids = set()
+        
+        for word in query_words:
+            word_result = client.table("chunks").select("*").ilike("text", f"%{word}%").limit(limit * 2).execute()
+            if word_result.data:
+                for chunk in word_result.data:
+                    chunk_id = chunk.get('id')
+                    if chunk_id and chunk_id not in seen_ids:
+                        seen_ids.add(chunk_id)
+                        all_results.append(chunk)
+        
+        # Return up to limit results
+        return all_results[:limit]
     
     @staticmethod
     def get_by_source(source: str) -> List[Dict[str, Any]]:
