@@ -1,0 +1,124 @@
+/* PDF Selection Controls - Inline in Header */
+.pdf-list-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 24px;
+}
+
+.pdf-selection-controls-inline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.selection-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.selection-info.selecting {
+  transform: scale(1.05);
+  background: rgba(100, 200, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin: -4px -8px;
+}
+
+.selection-info label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.selection-info label:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.selection-info label:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.selection-count {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.delete-selected-button {
+  padding: 8px 18px;
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 8px;
+  color: #FF3B30;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.delete-selected-button:hover:not(:disabled) {
+  background: rgba(255, 59, 48, 0.25);
+  border-color: rgba(255, 59, 48, 0.5);
+  transform: translateY(-1px);
+}
+
+.delete-selected-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pdf-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* Selected item styling */
+.pdf-gallery-item.selected {
+  border-color: rgba(100, 200, 255, 0.6);
+  background: rgba(100, 200, 255, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(100, 200, 255, 0.2);
+}
+
+.pdf-gallery-item.selected .pdf-gallery-content {
+  background: rgba(100, 200, 255, 0.05);
+}
+
+/* Checkbox styling */
+.pdf-item-checkbox:checked {
+  accent-color: #64C8FF;
+}
+
+.pdf-select-checkbox:checked {
+  accent-color: #64C8FF;
+}
+
+/* Active state for clicking */
+.selection-info label:active {
+  transform: scale(0.98);
+}
+
+.pdf-item-checkbox:active,
+.pdf-select-checkbox:active {
+  transform: scale(1.1);
+}
+

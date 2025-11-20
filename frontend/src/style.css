@@ -134,30 +134,38 @@ body::before {
   flex-direction: column;
 }
 
-/* Custom Scrollbar - Apple style */
+/* Hide Scrollbars Globally */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Custom Scrollbar - Hidden (keeping for reference but scrollbars are now hidden) */
 .chat-container::-webkit-scrollbar,
 .admin-panel-visible::-webkit-scrollbar,
-.admin-tab-content-main::-webkit-scrollbar {
-  width: 6px;
+.admin-tab-content-main::-webkit-scrollbar,
+.admin-dashboard::-webkit-scrollbar,
+.pdf-list::-webkit-scrollbar,
+.pdf-list-page-visible::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .chat-container::-webkit-scrollbar-track,
 .admin-panel-visible::-webkit-scrollbar-track,
 .admin-tab-content-main::-webkit-scrollbar-track {
-  background: transparent;
+  display: none;
 }
 
 .chat-container::-webkit-scrollbar-thumb,
 .admin-panel-visible::-webkit-scrollbar-thumb,
 .admin-tab-content-main::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-}
-
-.chat-container::-webkit-scrollbar-thumb:hover,
-.admin-panel-visible::-webkit-scrollbar-thumb:hover,
-.admin-tab-content-main::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  display: none;
 }
 
 /* Messages */
@@ -451,20 +459,162 @@ body::before {
   flex-direction: column;
 }
 
+/* Admin Panel Content */
+.admin-panel-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Admin Dashboard */
+.admin-dashboard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.admin-dashboard-content {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.admin-dashboard-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.admin-dashboard-section {
+  margin-bottom: 40px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+.admin-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-dashboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-action-button {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+}
+
+.admin-action-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.admin-action-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.admin-action-text {
+  flex: 1;
+}
+
+.admin-action-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.admin-action-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* PDF List Page */
+.pdf-list-page-hidden {
+  display: none;
+}
+
+.pdf-list-page-visible {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.pdf-list-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  flex-shrink: 0;
+}
+
+.back-button {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pdf-list-page-header .pdf-list-title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 /* Admin Upload Section */
 .admin-upload-section {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 40px 20px;
+  align-items: stretch;
+  width: 100%;
 }
 
 .upload-area-main {
   width: 100%;
-  max-width: 600px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -476,12 +626,13 @@ body::before {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding: 60px 40px;
+  padding: 50px 30px;
   background: rgba(255, 255, 255, 0.03);
   border: 2px dashed rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 200px;
 }
 
 .upload-label-main:hover {
@@ -522,15 +673,14 @@ body::before {
 
 .upload-button-main {
   width: 100%;
-  max-width: 600px;
   padding: 16px 32px;
   background: var(--blue-primary);
   color: white;
   border: none;
-  border-radius: 16px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   transition: all 0.2s ease;
 }
@@ -566,6 +716,302 @@ body::before {
 .upload-status-main.error {
   color: #FF3B30;
   background: rgba(255, 59, 48, 0.1);
+}
+
+/* PDF List Items - Clickable Links */
+.pdf-list-item-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 8px;
+}
+
+.pdf-list-item-link:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-item-name-link {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.pdf-list-item-link:hover .pdf-item-name-link {
+  color: var(--blue-primary);
+  text-decoration: underline;
+}
+
+.pdf-item-icon {
+  font-size: 24px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.pdf-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pdf-item-details {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.pdf-item-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.pdf-item-status {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.status-processed {
+  background: rgba(52, 199, 89, 0.2);
+  color: #34C759;
+}
+
+.status-processing {
+  background: rgba(255, 193, 7, 0.2);
+  color: #FFC107;
+}
+
+/* PDF List Container */
+.admin-pdf-list-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pdf-list-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 16px 0;
+}
+
+/* PDF List - Replaced with Gallery */
+.pdf-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  padding: 30px 40px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.pdf-list-page-visible .pdf-list {
+  padding: 30px 40px;
+}
+
+/* Loading and Empty States for PDF List */
+.pdf-list > .loading,
+.pdf-list > .no-pdfs,
+.pdf-list > .error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
+.pdf-list > .error {
+  color: #FF3B30;
+  background: rgba(255, 59, 48, 0.1);
+  border-color: rgba(255, 59, 48, 0.2);
+}
+
+/* PDF Gallery - Image Gallery Style */
+.pdf-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.pdf-gallery-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: visible;
+  transition: all 0.3s ease;
+  min-height: 200px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  position: relative;
+  gap: 12px;
+  padding: 12px;
+}
+
+.pdf-select-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+.pdf-item-checkbox,
+.pdf-select-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #64C8FF;
+  margin: 0;
+  transition: transform 0.2s ease;
+}
+
+.pdf-item-checkbox:hover,
+.pdf-select-checkbox:hover {
+  transform: scale(1.15);
+}
+
+.pdf-item-checkbox:active,
+.pdf-select-checkbox:active {
+  transform: scale(0.95);
+}
+
+.pdf-gallery-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.pdf-gallery-item:hover .pdf-gallery-content {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.pdf-gallery-item:hover {
+  border-color: rgba(100, 200, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.pdf-gallery-thumbnail {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  position: relative;
+  min-height: 140px;
+  height: 140px;
+  padding: 16px;
+}
+
+.pdf-thumbnail-icon {
+  font-size: 48px;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.pdf-gallery-item:hover .pdf-thumbnail-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.pdf-thumbnail-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.pdf-thumbnail-status {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.pdf-gallery-info {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.pdf-gallery-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.pdf-gallery-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-word;
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+
+.pdf-gallery-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.pdf-gallery-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  opacity: 0.8;
 }
 
 /* Files List - Main */
@@ -834,20 +1280,21 @@ body::before {
 }
 
 .files-list::-webkit-scrollbar {
-  width: 6px;
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .files-list::-webkit-scrollbar-track {
-  background: transparent;
+  display: none;
 }
 
 .files-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  display: none;
 }
 
 .files-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  display: none;
 }
 
 .file-item {
@@ -1146,20 +1593,21 @@ body::before {
 }
 
 .file-preview::-webkit-scrollbar {
-  width: 6px;
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .file-preview::-webkit-scrollbar-track {
-  background: transparent;
+  display: none;
 }
 
 .file-preview::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  display: none;
 }
 
 .file-preview::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  display: none;
 }
 
 /* Preview Placeholder */
