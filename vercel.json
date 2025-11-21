@@ -5,7 +5,7 @@
   "devCommand": "cd frontend && npm run dev",
   "framework": null,
   "functions": {
-    "api/**/*.py": {
+    "api/*.py": {
       "memory": 1024,
       "maxDuration": 15
     }
