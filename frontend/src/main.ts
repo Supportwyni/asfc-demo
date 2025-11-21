@@ -483,16 +483,11 @@ function showPdfModal(url: string, filename: string, fileId: number | null = nul
   const modal = document.createElement('div');
   modal.className = 'pdf-viewer-modal';
   
-  const deleteButtonHtml = fileId ? `
-    <button class="delete-button" data-file-id="${fileId}" data-filename="${escapeHtml(filename)}">🗑️ Delete</button>
-  ` : '';
-  
   modal.innerHTML = `
     <div class="pdf-viewer-container">
       <div class="pdf-viewer-header">
         <h3>${escapeHtml(filename)}</h3>
         <div class="pdf-viewer-header-actions">
-          ${deleteButtonHtml}
           <button class="close-button">×</button>
         </div>
       </div>
@@ -512,16 +507,6 @@ function showPdfModal(url: string, filename: string, fileId: number | null = nul
     });
   }
   
-  // Delete button handler
-  if (fileId) {
-    const deleteButton = modal.querySelector('.delete-button');
-    if (deleteButton) {
-      deleteButton.addEventListener('click', () => {
-        deletePdfFile(fileId, filename, modal);
-      });
-    }
-  }
-  
   // Close on background click
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
@@ -530,150 +515,11 @@ function showPdfModal(url: string, filename: string, fileId: number | null = nul
   });
 }
 
-// Setup PDF selection functionality
+// Setup PDF selection functionality - DISABLED (delete feature removed)
 function setupPdfSelection(files: any[]) {
-  const selectAllCheckbox = document.querySelector<HTMLInputElement>('#select-all-pdfs');
-  const deleteSelectedButton = document.querySelector<HTMLButtonElement>('.delete-selected-button');
-  const selectionCountSpan = document.querySelector<HTMLSpanElement>('.selection-count');
-  
-  if (!selectAllCheckbox || !deleteSelectedButton || !selectionCountSpan) {
-    console.error('[SELECTION] Missing selection controls');
-    return;
-  }
-  
-  console.log('[SELECTION] Setting up selection for', files.length, 'files');
-  
-  const updateSelectionUI = () => {
-    const checkboxes = document.querySelectorAll<HTMLInputElement>('.pdf-item-checkbox');
-    const selectedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
-    const totalCount = checkboxes.length;
-    
-    console.log('[SELECTION] Selected:', selectedCount, 'of', totalCount);
-    
-    selectionCountSpan.textContent = `${selectedCount} selected`;
-    deleteSelectedButton.disabled = selectedCount === 0;
-    selectAllCheckbox.checked = selectedCount === totalCount && totalCount > 0;
-    selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < totalCount;
-    
-    // Add visual feedback to selected items
-    const pdfItems = document.querySelectorAll('.pdf-gallery-item');
-    pdfItems.forEach((item, index) => {
-      const checkbox = item.querySelector<HTMLInputElement>('.pdf-item-checkbox');
-      if (checkbox && checkbox.checked) {
-        item.classList.add('selected');
-      } else {
-        item.classList.remove('selected');
-      }
-    });
-  };
-  
-  // Select all checkbox handler with animation
-  selectAllCheckbox.addEventListener('change', (e) => {
-    console.log('[SELECTION] Select all toggled:', selectAllCheckbox.checked);
-    const checkboxes = document.querySelectorAll<HTMLInputElement>('.pdf-item-checkbox');
-    
-    // Add animation effect
-    selectAllCheckbox.parentElement?.classList.add('selecting');
-    setTimeout(() => {
-      selectAllCheckbox.parentElement?.classList.remove('selecting');
-    }, 300);
-    
-    checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
-    updateSelectionUI();
-  });
-  
-  // Individual checkbox handlers
-  const checkboxes = document.querySelectorAll<HTMLInputElement>('.pdf-item-checkbox');
-  console.log('[SELECTION] Found', checkboxes.length, 'checkboxes');
-  
-  checkboxes.forEach((checkbox, index) => {
-    checkbox.addEventListener('change', (e) => {
-      console.log('[SELECTION] Checkbox', index, 'changed:', checkbox.checked);
-      updateSelectionUI();
-    });
-  });
-  
-  // Delete selected button handler
-  deleteSelectedButton.addEventListener('click', async () => {
-    const selectedCheckboxes = Array.from(document.querySelectorAll<HTMLInputElement>('.pdf-item-checkbox:checked'));
-    const selectedFiles = selectedCheckboxes.map(cb => ({
-      id: parseInt(cb.getAttribute('data-file-id') || '0'),
-      filename: cb.getAttribute('data-filename') || 'unknown'
-    }));
-    
-    if (selectedFiles.length === 0) return;
-    
-    const fileList = selectedFiles.map(f => f.filename).join('\n  • ');
-    if (!confirm(`Are you sure you want to delete ${selectedFiles.length} PDF(s)?\n\n  • ${fileList}\n\nThis action cannot be undone.`)) {
-      return;
-    }
-    
-    await deleteSelectedPdfs(selectedFiles);
-  });
-  
-  updateSelectionUI();
+  // Delete functionality has been removed from admin panel
+  console.log('[INFO] PDF selection disabled - delete feature removed');
 }
-
-// Delete multiple PDFs
-async function deleteSelectedPdfs(files: { id: number; filename: string }[]) {
-  const uploadStatus = document.querySelector<HTMLDivElement>('.upload-status')!;
-  let successCount = 0;
-  let failCount = 0;
-  
-  uploadStatus.textContent = `Deleting ${files.length} PDF(s)...`;
-  uploadStatus.className = 'upload-status loading';
-  
-  for (const file of files) {
-    try {
-      const response = await fetch(`${API_URL}/files/${file.id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    const data = await response.json();
-    
-    if (data.success) {
-        successCount++;
-      } else {
-        failCount++;
-        console.error(`Failed to delete ${file.filename}:`, data.error);
-      }
-    } catch (error) {
-      failCount++;
-      console.error(`Failed to delete ${file.filename}:`, error);
-    }
-      }
-      
-  // Clear cache and reload PDF list
-  cachedPdfFiles = [];
-  loadPdfList(true);
-      
-      // Show success message
-  if (failCount === 0) {
-    uploadStatus.textContent = `✓ Successfully deleted ${successCount} PDF(s)`;
-      uploadStatus.className = 'upload-status success';
-  } else {
-    uploadStatus.textContent = `⚠ Deleted ${successCount} PDF(s), ${failCount} failed`;
-    uploadStatus.className = 'upload-status error';
-  }
-  
-      setTimeout(() => {
-        uploadStatus.textContent = '';
-        uploadStatus.className = '';
-      }, 3000);
-}
-
-// Delete single PDF file (kept for compatibility)
-async function deletePdfFile(fileId: number, filename: string, modal: HTMLElement | null = null) {
-  await deleteSelectedPdfs([{ id: fileId, filename }]);
-  if (modal) {
-    modal.remove();
-  }
-}
-
-// deletePdfFile is now used directly via event listeners, no need for global
 
 // Load PDF list
 async function loadPdfList(forceReload: boolean = false) {
@@ -716,21 +562,13 @@ async function loadPdfList(forceReload: boolean = false) {
     if (files.length > 0) {
       // Store files array for later use
       
-      // Update header with selection controls
+      // Update header without selection controls (delete feature removed)
       const pdfListPageHeader = document.querySelector('.pdf-list-page-header');
       if (pdfListPageHeader) {
         pdfListPageHeader.innerHTML = `
           <button class="back-button" id="back-to-admin-from-list">← Back to Admin</button>
           <div class="pdf-list-header-content">
             <h3 class="pdf-list-title">Uploaded PDFs</h3>
-            <div class="pdf-selection-controls-inline">
-              <div class="selection-info">
-                <input type="checkbox" id="select-all-pdfs" class="pdf-select-checkbox" />
-                <label for="select-all-pdfs">Select</label>
-                <span class="selection-count">0 selected</span>
-              </div>
-              <button class="delete-selected-button" disabled>Delete Selected</button>
-            </div>
           </div>
         `;
         
@@ -749,12 +587,7 @@ async function loadPdfList(forceReload: boolean = false) {
         const displayFilename = escapeHtml(filename);
         
         return `
-        <div class="pdf-gallery-item ${fileId !== null ? 'selectable' : ''}" data-file-id="${fileId !== null ? fileId : ''}" data-filename="${filename}" data-index="${index}">
-          ${fileId !== null ? `
-          <div class="pdf-select-wrapper">
-            <input type="checkbox" class="pdf-item-checkbox" data-file-id="${fileId}" data-filename="${escapeHtml(filename)}" />
-          </div>
-          ` : ''}
+        <div class="pdf-gallery-item" data-file-id="${fileId !== null ? fileId : ''}" data-filename="${filename}" data-index="${index}">
           <div class="pdf-gallery-content">
           <div class="pdf-gallery-thumbnail">
             <div class="pdf-thumbnail-icon">📄</div>
@@ -797,10 +630,6 @@ async function loadPdfList(forceReload: boolean = false) {
         const pdfContent = item.querySelector('.pdf-gallery-content');
         if (pdfContent) {
           pdfContent.addEventListener('click', async (e) => {
-            // Don't open PDF if clicking on checkbox
-            if ((e.target as HTMLElement).closest('.pdf-item-checkbox') || (e.target as HTMLElement).closest('.pdf-select-wrapper')) {
-              return;
-            }
           e.preventDefault();
           
           try {

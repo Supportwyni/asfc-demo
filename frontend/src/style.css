@@ -572,11 +572,19 @@ body::before {
 .pdf-list-page-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
   padding: 24px 40px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.02);
   flex-shrink: 0;
+}
+
+.pdf-list-header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
 }
 
 .back-button {
@@ -816,9 +824,9 @@ body::before {
 /* PDF List - Replaced with Gallery */
 .pdf-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px;
-  padding: 30px 40px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+  padding: 32px 40px;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
@@ -851,76 +859,70 @@ body::before {
 /* PDF Gallery - Image Gallery Style */
 .pdf-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+  padding: 32px 40px;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
 }
 
+/* PDF Gallery Grid - Alternative class used in code */
+.pdf-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px;
+}
+
 .pdf-gallery-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  overflow: visible;
-  transition: all 0.3s ease;
-  min-height: 200px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
+  flex-direction: column;
   position: relative;
-  gap: 12px;
-  padding: 12px;
-}
-
-.pdf-select-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 4px;
-}
-
-.pdf-item-checkbox,
-.pdf-select-checkbox {
-  width: 18px;
-  height: 18px;
   cursor: pointer;
-  accent-color: #64C8FF;
-  margin: 0;
-  transition: transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.5s ease-out backwards;
 }
 
-.pdf-item-checkbox:hover,
-.pdf-select-checkbox:hover {
-  transform: scale(1.15);
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.pdf-item-checkbox:active,
-.pdf-select-checkbox:active {
-  transform: scale(0.95);
-}
+/* Stagger animation for multiple items */
+.pdf-gallery-item:nth-child(1) { animation-delay: 0.05s; }
+.pdf-gallery-item:nth-child(2) { animation-delay: 0.1s; }
+.pdf-gallery-item:nth-child(3) { animation-delay: 0.15s; }
+.pdf-gallery-item:nth-child(4) { animation-delay: 0.2s; }
+.pdf-gallery-item:nth-child(5) { animation-delay: 0.25s; }
+.pdf-gallery-item:nth-child(6) { animation-delay: 0.3s; }
+.pdf-gallery-item:nth-child(7) { animation-delay: 0.35s; }
+.pdf-gallery-item:nth-child(8) { animation-delay: 0.4s; }
+.pdf-gallery-item:nth-child(9) { animation-delay: 0.45s; }
 
 .pdf-gallery-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  cursor: pointer;
   min-width: 0;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.pdf-gallery-item:hover .pdf-gallery-content {
-  background: rgba(255, 255, 255, 0.04);
+  width: 100%;
 }
 
 .pdf-gallery-item:hover {
-  border-color: rgba(100, 200, 255, 0.5);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+  border-color: rgba(0, 122, 255, 0.6);
+  box-shadow: 0 12px 40px rgba(0, 122, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .pdf-gallery-thumbnail {
@@ -928,23 +930,25 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.08) 0%, rgba(0, 122, 255, 0.02) 100%);
   position: relative;
-  min-height: 140px;
-  height: 140px;
-  padding: 16px;
+  min-height: 160px;
+  height: 160px;
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .pdf-thumbnail-icon {
-  font-size: 48px;
-  opacity: 0.6;
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  font-size: 64px;
+  opacity: 0.7;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
 }
 
 .pdf-gallery-item:hover .pdf-thumbnail-icon {
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.15) rotate(-5deg);
+  filter: drop-shadow(0 8px 24px rgba(0, 122, 255, 0.3));
 }
 
 .pdf-thumbnail-overlay {
@@ -967,13 +971,13 @@ body::before {
 }
 
 .pdf-gallery-info {
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  background: transparent;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
   overflow: hidden;
+  min-height: 100px;
 }
 
 .pdf-gallery-header {
@@ -986,11 +990,11 @@ body::before {
 }
 
 .pdf-gallery-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
   word-break: break-word;
-  line-height: 1.4;
+  line-height: 1.5;
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -998,20 +1002,27 @@ body::before {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  transition: color 0.3s ease;
+}
+
+.pdf-gallery-item:hover .pdf-gallery-name {
+  color: var(--blue-primary);
 }
 
 
 .pdf-gallery-meta {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.5;
+  font-weight: 500;
 }
 
 .pdf-gallery-date {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
-  margin-top: 2px;
-  opacity: 0.8;
+  margin-top: 4px;
+  opacity: 0.7;
+  font-weight: 400;
 }
 
 /* Files List - Main */
@@ -1749,5 +1760,57 @@ body::before {
   
   .file-name {
     text-align: center;
+  }
+  
+  /* PDF Gallery Mobile Optimizations */
+  .pdf-list,
+  .pdf-gallery,
+  .pdf-gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .pdf-list-page-header {
+    padding: 16px 20px;
+    flex-wrap: wrap;
+  }
+  
+  .pdf-list-page-header .pdf-list-title {
+    font-size: 18px;
+  }
+  
+  .back-button {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+  
+  .admin-dashboard {
+    padding: 20px;
+  }
+  
+  .admin-dashboard-section {
+    padding: 16px;
+  }
+}
+
+/* Tablet view - 2 columns */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .pdf-list,
+  .pdf-gallery,
+  .pdf-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 24px;
+  }
+}
+
+/* Large screens - 3+ columns */
+@media (min-width: 1400px) {
+  .pdf-list,
+  .pdf-gallery,
+  .pdf-gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px;
   }
 }

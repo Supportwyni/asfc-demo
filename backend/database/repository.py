@@ -80,6 +80,30 @@ class PDFRepository:
         """Update PDF document metadata."""
         client = get_client()
         client.table("pdf_documents").update({"metadata": metadata}).eq("filename", filename).execute()
+    
+    @staticmethod
+    def update(document_id: int, document: PDFDocument) -> Dict[str, Any]:
+        """Update an existing PDF document record."""
+        client = get_client()
+        data = document.dict(exclude_none=True)
+        
+        # Convert file_content bytes to base64 for Supabase storage
+        if 'file_content' in data and data['file_content'] is not None:
+            import base64
+            data['file_content'] = base64.b64encode(data['file_content']).decode('utf-8')
+        
+        # Remove id from update data (it's used in the where clause)
+        update_data = {k: v for k, v in data.items() if k != 'id'}
+        
+        result = client.table("pdf_documents").update(update_data).eq("id", document_id).execute()
+        return result.data[0] if result.data else {}
+    
+    @staticmethod
+    def delete(document_id: int) -> bool:
+        """Delete a PDF document record."""
+        client = get_client()
+        result = client.table("pdf_documents").delete().eq("id", document_id).execute()
+        return True
 
 
 class ChunkRepository:

@@ -15,7 +15,8 @@ else:
 
 # Supabase configuration
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")  # Anon key for regular operations
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")  # Service role key for storage/admin operations
 SUPABASE_PASSWORD = os.getenv("SUPABASE_PASSWORD", "asfc9812!")
 
 # PostgreSQL direct connection (optional, for direct DB access)
