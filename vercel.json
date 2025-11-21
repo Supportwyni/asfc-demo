@@ -3,11 +3,5 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "npm install --prefix frontend",
   "devCommand": "cd frontend && npm run dev",
-  "framework": null,
-  "functions": {
-    "api/*.py": {
-      "memory": 1024,
-      "maxDuration": 15
-    }
-  }
+  "framework": null
 }
