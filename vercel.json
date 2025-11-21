@@ -6,8 +6,8 @@
   "framework": null,
   "functions": {
     "api/**/*.py": {
-      "memory": 3009,
-      "maxDuration": 30
+      "memory": 1024,
+      "maxDuration": 15
     }
   }
 }
